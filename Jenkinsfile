@@ -1,10 +1,5 @@
 pipeline {
 
-  environment {
-    dockerimagename = "neha8888/react-app"
-    dockerImage = ""
-  }
-
   agent any
 
   stages {
