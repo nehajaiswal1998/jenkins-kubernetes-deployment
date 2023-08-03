@@ -44,6 +44,7 @@ pipeline {
           withCredentials([kubeconfig(credentialsId: 'kubeconfig-credentials')]) {
                        
           kubernetesDeploy(configs: "deployment.yaml", "service.yaml")
+          }
         }
       }
     }
