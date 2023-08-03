@@ -34,12 +34,12 @@ pipeline {
         }
       }
     }
-    stage('Mask Sensitive Data') {
-            steps {
-                // Mask the value of KUBECONFIG_CRED variable
-                maskPasswords('${KUBECONFIG_CRED}')
-            }
-        }
+    // stage('Mask Sensitive Data') {
+    //         steps {
+    //             // Mask the value of KUBECONFIG_CRED variable
+    //             maskPasswords('${KUBECONFIG_CRED}')
+    //         }
+    //     }
     stage('Deploying React.js container to Kubernetes') {
       environment {
              KUBECONFIG_CRED = credentials('kubeconfig-credentials')
