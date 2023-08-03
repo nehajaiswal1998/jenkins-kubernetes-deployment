@@ -1,4 +1,8 @@
 pipeline {
+  environment {
+      dockerimagename = "neha8888/react-app"
+      dockerImage = ""
+    }
 
   agent any
 
@@ -6,8 +10,8 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/nehajaiswal1998/jenkins-kubernetes-deployment.git'
-      }
+      git branch: 'main', url: 'https://github.com/nehajaiswal1998/jenkins-kubernetes-deployment.git'
+     }
     }
 
     stage('Build image') {
