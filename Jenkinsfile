@@ -43,11 +43,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([kubeconfig(credentialsId: 'kubeconfig-credentials')]) {
-                        kubeconfig([credentialsId: 'kubeconfig-credentials', disableAutoConfig: true]) {
-                            sh 'kubectl get pods'
-                            sh 'kubectl apply -f deployment.yaml'
-                            sh 'kubectl apply -f service.yaml'
-                        }
+                        kubeconfig([credentialsId: 'kubeconfig-credentials', disableAutoConfig: true])
+                        sh 'kubectl get pods'
+                        sh 'kubectl apply -f deployment.yaml'
+                        sh 'kubectl apply -f service.yaml'
                     }
                 }
             }
