@@ -1,57 +1,56 @@
 pipeline {
-  environment {
-      dockerimagename = "neha8888/react-app"
-      dockerImage = ""
+    environment {
+        dockerimagename = "neha8888/react-app"
+        dockerImage = ""
     }
 
-  agent any
+    agent any
 
-  stages {
+    stages {
 
-    stage('Checkout Source') {
-      steps {
-      git branch: 'main', url: 'https://github.com/nehajaiswal1998/jenkins-kubernetes-deployment.git'
-     }
-    }
-
-    stage('Build image') {
-      steps{
-        script {
-          dockerImage = docker.build dockerimagename
+        stage('Checkout Source') {
+            steps {
+                git branch: 'main', url: 'https://github.com/nehajaiswal1998/jenkins-kubernetes-deployment.git'
+            }
         }
-      }
-    }
 
-    stage('Pushing Image') {
-      environment {
-               registryCredential = 'dockerHub'
-           }
-      steps{
-        script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
-          }
+        stage('Build image') {
+            steps {
+                script {
+                    dockerImage = docker.build dockerimagename
+                }
+            }
         }
-      }
-    }
-    
-    stage('Deploying React.js container to Kubernetes') {
-      environment {
-             KUBECONFIG_CRED = credentials('kubeconfig-credentials')
-      }
-      
-      steps {
-        script {
-            withCredentials([kubeconfig(credentialsId: 'kubeconfig-credentials')]) {
-                kubeconfig([credentialsId: 'kubeconfig-credentials', disableAutoConfig: true]){
-                sh 'kubectl get pods'
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
+
+        stage('Pushing Image') {
+            environment {
+                registryCredential = 'dockerHub'
+            }
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
+
+        stage('Deploying React.js container to Kubernetes') {
+            environment {
+                KUBECONFIG_CRED = credentials('kubeconfig-credentials')
+            }
+
+            steps {
+                script {
+                    withCredentials([kubeconfig(credentialsId: 'kubeconfig-credentials')]) {
+                        kubeconfig([credentialsId: 'kubeconfig-credentials', disableAutoConfig: true]) {
+                            sh 'kubectl get pods'
+                            sh 'kubectl apply -f deployment.yaml'
+                            sh 'kubectl apply -f service.yaml'
+                        }
+                    }
+                }
             }
         }
     }
-}
-
-  }
-  }
 }
