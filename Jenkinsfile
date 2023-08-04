@@ -36,20 +36,22 @@ pipeline {
         }
 
         stage('Deploying React.js container to Kubernetes') {
-            environment {
-                KUBECONFIG_CRED = credentials('kubeconfig-credentials')
-            }
+    environment {
+        KUBECONFIG_CRED = credentials('kubeconfig-credentials')
+    }
 
-            steps {
-                script {
-                    withCredentials([kubeconfig(credentialsId: 'kubeconfig-credentials')]) {
-                        kubeconfig([credentialsId: 'kubeconfig-credentials', disableAutoConfig: true])
-                        sh 'kubectl get pods'
-                        sh 'kubectl apply -f deployment.yaml'
-                        sh 'kubectl apply -f service.yaml'
-                    }
+    steps {
+        script {
+            withCredentials([kubeconfig(credentialsId: 'kubeconfig-credentials')]) {
+                withKubeConfig([credentialsId: 'kubeconfig-credentials', disableAutoConfig: true]) {
+                    sh 'kubectl get pods'
+                    sh 'kubectl apply -f deployment.yaml'
+                    sh 'kubectl apply -f service.yaml'
                 }
             }
         }
+    }
+}
+
     }
 }
